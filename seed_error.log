@@ -1,0 +1,23 @@
+
+> devscenarios@0.1.0 seed
+> npx ts-node --project tsconfig.seed.json scripts/seed.ts
+
+/Volumes/My Files/Projects/DevScenarios/node_modules/ts-node/src/index.ts:859
+    return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+           ^
+TSError: ⨯ Unable to compile TypeScript:
+lib/scenarios-data.ts(151,16): error TS2304: Cannot find name 'Domain'.
+lib/scenarios-data.ts(152,21): error TS2304: Cannot find name 'Difficulty'.
+
+    at createTSError (/Volumes/My Files/Projects/DevScenarios/node_modules/ts-node/src/index.ts:859:12)
+    at reportTSError (/Volumes/My Files/Projects/DevScenarios/node_modules/ts-node/src/index.ts:863:19)
+    at getOutput (/Volumes/My Files/Projects/DevScenarios/node_modules/ts-node/src/index.ts:1077:36)
+    at Object.compile (/Volumes/My Files/Projects/DevScenarios/node_modules/ts-node/src/index.ts:1433:41)
+    at Module.m._compile (/Volumes/My Files/Projects/DevScenarios/node_modules/ts-node/src/index.ts:1617:30)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+    at Object.require.extensions.<computed> [as .ts] (/Volumes/My Files/Projects/DevScenarios/node_modules/ts-node/src/index.ts:1621:12)
+    at Module.load (node:internal/modules/cjs/loader:1266:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:1091:12)
+    at Module.require (node:internal/modules/cjs/loader:1289:19) {
+  diagnosticCodes: [ 2304, 2304 ]
+}

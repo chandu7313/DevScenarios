@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 10, 12;
+  --background-end-rgb: 0, 0, 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+}
+
+@layer base {
+  * {
+    @apply border-white/10;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/[0.03] backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300;
+  }
+  
+  .terminal-box {
+    @apply font-mono bg-[#0d1117] border border-[#30363d] rounded-lg overflow-hidden shadow-2xl;
+  }
+
+  .badge-critical { @apply bg-red-500/10 text-red-500 border border-red-500/20; }
+  .badge-hard { @apply bg-orange-500/10 text-orange-500 border border-orange-500/20; }
+  .badge-core { @apply bg-blue-500/10 text-blue-500 border border-blue-500/20; }
+  .badge-advanced { @apply bg-purple-500/10 text-purple-500 border border-purple-500/20; }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-white/20;
+}
