@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef } from 'react';
 import { Trash2, Send, Loader2 } from 'lucide-react';
 import { useChat } from '@/hooks/useChat';
