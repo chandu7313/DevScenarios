@@ -2,7 +2,6 @@ import connectDB from '@/lib/db';
 import Scenario from '@/models/Scenario';
 import { notFound } from 'next/navigation';
 import ChatPanel from '@/components/ChatPanel';
-import { SCENARIOS } from '@/lib/scenarios-data';
 import { ChevronLeft, Info, AlertTriangle, Building2, Terminal } from 'lucide-react';
 import Link from 'next/link';
 
