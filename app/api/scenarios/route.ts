@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   // ── Cache READ ────────────────────────────────────────────────────────────
   if (isCacheable) {
     try {
-      const cached = await redis!.get<string>(cacheKey);
+      const cached = await redis!.get(cacheKey);
       if (cached) {
         const parsed = typeof cached === 'string' ? JSON.parse(cached) : cached;
         return NextResponse.json(parsed, { headers: { 'X-Cache': 'HIT' } });

@@ -1,14 +1,18 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-
-if (!GEMINI_API_KEY) {
-  throw new Error('GEMINI_API_KEY environment variable is not defined');
-}
-
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+let genAI: GoogleGenerativeAI | null = null;
 
 export function getGeminiModel() {
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
+  if (!GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY environment variable is not defined');
+  }
+
+  if (!genAI) {
+    genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+  }
+
   return genAI.getGenerativeModel({
     model: 'gemini-1.5-flash',
     generationConfig: {
@@ -54,4 +58,4 @@ ${realWorldExamples.map((ex, i) => `${i + 1}. ${ex}`).join('\n')}
 - Be concise but thorough — senior engineers value density of information`;
 }
 
-export default genAI;
+

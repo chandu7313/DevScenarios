@@ -94,6 +94,22 @@ npm run seed
 ```bash
 npm run dev
 ```
+
+### 🐳 Run with Docker
+You can also run the application using Docker:
+
+1. **Build and Start**:
+   ```bash
+   docker-compose up --build
+   ```
+
+2. **Access**:
+   The app will be available at [http://localhost:3000](http://localhost:3000).
+
+3. **Seeding (from within container)**:
+   ```bash
+   docker exec -it devscenarios-app npm run seed
+   ```
 Open [http://localhost:3000](http://localhost:3000) to start exploring.
 
 ## 📜 Code Quality Rules

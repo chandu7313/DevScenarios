@@ -22,28 +22,25 @@ if (!MONGODB_URI) {
  * this step is skipped silently.
  */
 async function clearScenarioCache(): Promise<void> {
-  const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
-  const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const redisUrl = process.env.REDIS_URL;
 
-  if (!redisUrl || !redisToken) {
-    console.warn('[Cache] Redis env vars not set — skipping cache purge.');
+  if (!redisUrl) {
+    console.warn('[Cache] REDIS_URL env var not set — skipping cache purge.');
     return;
   }
 
   try {
-    // Lazy import so the script doesn't fail if @upstash/redis is missing.
-    const { Redis } = await import('@upstash/redis');
-    const redisClient = new Redis({ url: redisUrl, token: redisToken });
+    // Lazy import so the script doesn't fail if ioredis is missing.
+    const { default: Redis } = await import('ioredis');
+    const redisClient = new Redis(redisUrl);
 
     let cursor = 0;
     const keysToDelete: string[] = [];
 
     // Iterate with SCAN in pages of 100 until the cursor returns 0 (full cycle).
     do {
-      const [nextCursor, keys] = await redisClient.scan(cursor, {
-        match: 'cache:scenarios:*',
-        count: 100,
-      });
+      // ioredis scan returns [cursor, elements]
+      const [nextCursor, keys] = await redisClient.scan(cursor, 'MATCH', 'cache:scenarios:*', 'COUNT', 100);
       cursor = Number(nextCursor);
       keysToDelete.push(...(keys as string[]));
     } while (cursor !== 0);
@@ -54,6 +51,8 @@ async function clearScenarioCache(): Promise<void> {
     } else {
       console.log('[Cache] No scenario cache keys found in Redis.');
     }
+    
+    redisClient.disconnect();
   } catch (error) {
     // Non-fatal: the API will still serve data from MongoDB.
     console.warn('[Cache] Redis purge failed (non-fatal):', error);

@@ -6,15 +6,13 @@ import { SCENARIOS } from '@/lib/scenarios-data';
 import { ChevronLeft, Info, AlertTriangle, Building2, Terminal } from 'lucide-react';
 import Link from 'next/link';
 
-export async function generateStaticParams() {
-  return SCENARIOS.map((s) => ({
-    slug: s.slug,
-  }));
-}
+export const dynamic = 'force-dynamic';
+
+import { Scenario as IScenario } from '@/types';
 
 async function getScenario(slug: string) {
   await connectDB();
-  const scenario = await Scenario.findOne({ slug }).lean();
+  const scenario = await Scenario.findOne({ slug }).lean() as IScenario | null;
   return scenario;
 }
 
