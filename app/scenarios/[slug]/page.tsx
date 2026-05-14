@@ -1,7 +1,7 @@
 import connectDB from '@/lib/db';
 import Scenario from '@/models/Scenario';
 import { notFound } from 'next/navigation';
-import ChatPanel from '@/components/ChatPanel';
+import { ChatPanel } from '@/components/chat/ChatPanel';
 import { ChevronLeft, Info, AlertTriangle, Building2, Terminal } from 'lucide-react';
 import Link from 'next/link';
 
@@ -101,14 +101,7 @@ export default async function ScenarioPage({ params }: { params: { slug: string 
         {/* Right Panel: AI Chat */}
         <div className="w-full lg:w-1/2 flex flex-col bg-black overflow-hidden relative">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-500/50 to-transparent z-10" />
-          <ChatPanel 
-            scenarioSlug={scenario.slug} 
-            scenarioContext={{
-              title: scenario.title,
-              problem: scenario.overview.problem,
-              realWorldExamples: scenario.overview.realWorldExamples
-            }} 
-          />
+          <ChatPanel scenario={scenario as any} />
         </div>
       </div>
     </div>
