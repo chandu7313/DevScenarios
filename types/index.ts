@@ -31,6 +31,13 @@ export interface Scenario {
   tags: string[];
 }
 
+export interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date | string;
+}
+
 export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
