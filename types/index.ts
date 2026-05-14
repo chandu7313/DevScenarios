@@ -14,10 +14,17 @@ export type Domain =
 
 export type Difficulty = 'critical' | 'hard' | 'core' | 'advanced';
 
+export interface Approach {
+  title: string;
+  description: string;
+  complexity: 'low' | 'medium' | 'high';
+}
+
 export interface ScenarioOverview {
   problem: string;
   whyItHappens: string;
   realWorldExamples: string[];
+  approaches?: Approach[];
 }
 
 export interface Scenario {
