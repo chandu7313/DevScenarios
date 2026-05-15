@@ -6,10 +6,9 @@ services:
     container_name: devscenarios-app
     ports:
       - "3000:3000"
+    env_file:
+      - .env.local
     environment:
-      - MONGODB_URI=${MONGODB_URI}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
       - REDIS_URL=redis://redis:6379
     restart: always
     depends_on:
