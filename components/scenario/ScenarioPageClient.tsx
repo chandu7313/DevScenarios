@@ -15,13 +15,13 @@ export function ScenarioPageClient({ scenario }: Props) {
   const [chatOpen, setChatOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
+    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden">
       <ScenarioNavbar scenario={scenario} />
 
       {/* Two-panel layout */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left panel: scenario content (60%) */}
-        <div className="w-full lg:w-[60%] h-full border-r border-gray-200">
+        <div className="w-full lg:w-[60%] h-full border-r border-slate-200 dark:border-gray-800">
           <ScenarioContent scenario={scenario} onChatFocus={() => setChatOpen(true)} />
         </div>
 
@@ -33,7 +33,7 @@ export function ScenarioPageClient({ scenario }: Props) {
 
       {/* Mobile floating chat button */}
       <button
-        className="lg:hidden fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-5 py-3 rounded-full shadow-xl shadow-indigo-300 transition-all"
+        className="lg:hidden fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-5 py-3 rounded-full shadow-xl shadow-indigo-300 dark:shadow-none transition-all"
         onClick={() => setChatOpen(true)}
         aria-label="Open AI chat"
       >
@@ -51,10 +51,10 @@ export function ScenarioPageClient({ scenario }: Props) {
             aria-hidden="true"
           />
           {/* Sheet */}
-          <div className="relative bg-white rounded-t-2xl h-[85vh] flex flex-col animate-slide-up-sheet">
+          <div className="relative bg-white dark:bg-gray-900 rounded-t-2xl h-[85vh] flex flex-col animate-slide-up-sheet">
             {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
-              <div className="w-10 h-1 bg-gray-300 rounded-full" />
+              <div className="w-10 h-1 bg-slate-300 dark:bg-gray-700 rounded-full" />
             </div>
             <div className="flex-1 overflow-hidden">
               <ChatPanel scenario={scenario} onClose={() => setChatOpen(false)} />

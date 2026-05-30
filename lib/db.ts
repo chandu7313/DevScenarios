@@ -1,51 +1,33 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-interface MongooseCache {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
-}
-
-// Extend NodeJS global to cache connection across hot reloads
 declare global {
-  // eslint-disable-next-line no-var
-  var mongooseCache: MongooseCache | undefined;
+  var mongoose: { conn: any; promise: any } | undefined
 }
 
-const cached: MongooseCache = global.mongooseCache ?? { conn: null, promise: null };
+let cached = global.mongoose || { conn: null, promise: null }
+global.mongoose = cached
 
-if (!global.mongooseCache) {
-  global.mongooseCache = cached;
-}
-
-async function connectDB(): Promise<typeof mongoose> {
-  const MONGODB_URI = process.env.MONGODB_URI;
-
-  if (cached.conn) {
-    return cached.conn;
-  }
-
+export default async function connectDB() {
+  const MONGODB_URI = process.env.MONGODB_URI
   if (!MONGODB_URI) {
-    if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PHASE) {
-      throw new Error('MONGODB_URI environment variable is not defined');
-    }
-    console.warn('[MongoDB] MONGODB_URI not defined. Connection will fail.');
-    return mongoose;
+    throw new Error('MONGODB_URI environment variable not defined')
   }
 
+  if (cached.conn) return cached.conn
+  
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
-    });
+      serverSelectionTimeoutMS: 5000,
+    })
   }
-
+  
   try {
-    cached.conn = await cached.promise;
-  } catch (err) {
-    cached.promise = null;
-    throw err;
+    cached.conn = await cached.promise
+  } catch (e) {
+    cached.promise = null
+    throw e
   }
-
-  return cached.conn;
+  
+  return cached.conn
 }
-
-export default connectDB;

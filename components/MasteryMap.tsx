@@ -17,9 +17,11 @@ import {
   MessageSquare, 
   Globe, 
   Terminal,
-  ArrowRight
+  ArrowRight,
+  BrainCircuit
 } from 'lucide-react';
 import { Scenario, Domain, Difficulty } from '../types';
+import { ThemeToggle } from './layout/ThemeToggle';
 
 interface MasteryMapProps {
   initialScenarios: Scenario[];
@@ -41,10 +43,10 @@ const DOMAIN_CONFIG: Record<Domain, { name: string; icon: React.ReactNode; color
 };
 
 const DIFFICULTY_CONFIG: Record<Difficulty, { label: string; color: string }> = {
-  critical: { label: 'CRITICAL', color: 'bg-red-900/50 text-red-400 border-red-900/50' },
-  hard: { label: 'HARD', color: 'bg-orange-900/50 text-orange-400 border-orange-900/50' },
-  core: { label: 'CORE', color: 'bg-blue-900/50 text-blue-400 border-blue-900/50' },
-  advanced: { label: 'ADVANCED', color: 'bg-purple-900/50 text-purple-400 border-purple-900/50' },
+  critical: { label: 'CRITICAL', color: 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50' },
+  hard: { label: 'HARD', color: 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-900/50' },
+  core: { label: 'CORE', color: 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/50' },
+  advanced: { label: 'ADVANCED', color: 'bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-900/50' },
 };
 
 export default function MasteryMap({ initialScenarios }: MasteryMapProps) {
@@ -95,17 +97,29 @@ export default function MasteryMap({ initialScenarios }: MasteryMapProps) {
   const rightColumnDomains = domainList.slice(6);
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 font-sans selection:bg-blue-500/30">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 text-slate-800 dark:text-gray-100 font-sans selection:bg-blue-500/30">
+      {/* Sticky Premium Header */}
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/85 backdrop-blur-md border-b border-slate-200/80 dark:border-gray-900/80 px-6 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <BrainCircuit className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+          <span className="font-extrabold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-indigo-600 dark:from-white dark:to-indigo-400">DevScenarios</span>
+          <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/30">Beta</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+        </div>
+      </nav>
+
       {/* Grid Background Effect */}
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
       
-      <main className="relative z-10 max-w-7xl mx-auto px-6 py-16">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-12">
         {/* Header Section */}
         <header className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-gray-500">
             Production Engineering Mastery Map
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10">
+          <p className="text-slate-500 dark:text-gray-400 text-lg max-w-2xl mx-auto mb-10">
             60+ real-world scenarios, every critical engineering domain. Click any scenario to go deep.
           </p>
 
@@ -117,9 +131,9 @@ export default function MasteryMap({ initialScenarios }: MasteryMapProps) {
               { label: 'Dimensions Per Topic', value: '20' },
               { label: 'Depth', value: '∞' },
             ].map((stat, i) => (
-              <div key={i} className="bg-gray-900/50 border border-gray-800 rounded-xl p-6 backdrop-blur-sm">
-                <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                <div className="text-xs uppercase tracking-widest text-gray-500 font-medium">{stat.label}</div>
+              <div key={i} className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-800 rounded-xl p-6 shadow-sm dark:shadow-none backdrop-blur-sm">
+                <div className="text-3xl font-bold text-slate-900 dark:text-white mb-1">{stat.value}</div>
+                <div className="text-xs uppercase tracking-widest text-slate-400 dark:text-gray-500 font-medium">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -128,11 +142,11 @@ export default function MasteryMap({ initialScenarios }: MasteryMapProps) {
         {/* Search & Filters */}
         <div className="space-y-6 mb-12">
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-gray-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors" />
             <input 
               type="text" 
               placeholder="Search scenarios... e.g. 'race condition', 'Kafka', 'JWT'"
-              className="w-full bg-gray-900/80 border border-gray-800 rounded-2xl py-4 pl-12 pr-4 text-gray-200 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all backdrop-blur-md"
+              className="w-full bg-white dark:bg-gray-900/80 border border-slate-200 dark:border-gray-800 rounded-2xl py-4 pl-12 pr-4 text-slate-800 dark:text-gray-200 placeholder:text-slate-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all shadow-sm dark:shadow-none backdrop-blur-md"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -151,7 +165,7 @@ export default function MasteryMap({ initialScenarios }: MasteryMapProps) {
                 className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium border transition-all ${
                   activeFilter === pill.id 
                     ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20' 
-                    : 'bg-gray-900 border-gray-800 text-gray-400 hover:border-gray-700 hover:text-gray-200'
+                    : 'bg-white dark:bg-gray-900 border-slate-200 dark:border-gray-800 text-slate-600 dark:text-gray-400 hover:border-slate-300 dark:hover:border-gray-700 hover:text-slate-900 dark:hover:text-gray-200 shadow-sm dark:shadow-none'
                 }`}
               >
                 {pill.label}
@@ -187,10 +201,10 @@ export default function MasteryMap({ initialScenarios }: MasteryMapProps) {
         </div>
 
         {/* Mental Model Section */}
-        <section className="mt-24 pt-16 border-t border-gray-900 max-w-4xl mx-auto">
+        <section className="mt-24 pt-16 border-t border-slate-200 dark:border-gray-900 max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">The senior engineer's mental model</h2>
-            <p className="text-gray-400 leading-relaxed">
+            <p className="text-slate-500 dark:text-gray-400 leading-relaxed">
               Mid-level engineers ask "How do I build this?". Senior engineers ask "How will this fail under load?". 
               Production engineering is the art of identifying and mitigating failure modes before they happen in 
               the wild. It's about seeing the invisible contracts between systems.
@@ -213,12 +227,12 @@ export default function MasteryMap({ initialScenarios }: MasteryMapProps) {
               }
             ].map((item, i) => (
               <div key={i} className="flex gap-6 group">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center text-blue-400 font-bold text-xl group-hover:border-blue-500/50 transition-colors">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 flex items-center justify-center text-indigo-500 dark:text-blue-400 font-bold text-xl group-hover:border-indigo-500/50 dark:group-hover:border-blue-500/50 shadow-sm dark:shadow-none transition-colors">
                   {i + 1}
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-200 mb-2">{item.q}</h3>
-                  <p className="text-gray-500 leading-relaxed">{item.a}</p>
+                  <h3 className="text-xl font-semibold text-slate-800 dark:text-gray-200 mb-2">{item.q}</h3>
+                  <p className="text-slate-500 dark:text-gray-500 leading-relaxed">{item.a}</p>
                 </div>
               </div>
             ))}
@@ -226,7 +240,7 @@ export default function MasteryMap({ initialScenarios }: MasteryMapProps) {
         </section>
 
         {/* Footer */}
-        <footer className="mt-32 text-center text-gray-600 text-sm">
+        <footer className="mt-32 text-center text-slate-400 dark:text-gray-600 text-sm">
           <p>© {new Date().getFullYear()} DevScenarios. Built for Production Engineering Excellence.</p>
         </footer>
       </main>
@@ -244,38 +258,38 @@ function DomainSection({ domain, scenarios, isExpanded, onToggle }: {
   if (scenarios.length === 0) return null;
 
   return (
-    <div className={`bg-gray-900/40 border border-gray-800 rounded-2xl overflow-hidden transition-all duration-300 ${isExpanded ? 'ring-1 ring-gray-700' : ''}`}>
+    <div className={`bg-white/70 dark:bg-gray-900/40 border border-slate-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm dark:shadow-none transition-all duration-300 ${isExpanded ? 'ring-1 ring-slate-300 dark:ring-gray-700' : ''}`}>
       <button 
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-5 hover:bg-gray-800/30 transition-colors"
+        className="w-full flex items-center justify-between p-5 hover:bg-slate-50 dark:hover:bg-gray-800/30 transition-colors"
       >
         <div className="flex items-center gap-4">
-          <div className={`w-10 h-10 rounded-xl bg-gray-950 flex items-center justify-center border-l-2 ${config.color}`}>
+          <div className={`w-10 h-10 rounded-xl bg-slate-50 dark:bg-gray-950 flex items-center justify-center border-l-2 ${config.color}`}>
             {config.icon}
           </div>
           <div className="text-left">
-            <h3 className="font-bold text-gray-200">{config.name}</h3>
-            <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">{scenarios.length} Scenarios</span>
+            <h3 className="font-bold text-slate-800 dark:text-gray-200">{config.name}</h3>
+            <span className="text-xs text-slate-400 dark:text-gray-500 font-medium uppercase tracking-wider">{scenarios.length} Scenarios</span>
           </div>
         </div>
-        {isExpanded ? <ChevronDown className="w-5 h-5 text-gray-500" /> : <ChevronRight className="w-5 h-5 text-gray-500" />}
+        {isExpanded ? <ChevronDown className="w-5 h-5 text-slate-400 dark:text-gray-500" /> : <ChevronRight className="w-5 h-5 text-slate-400 dark:text-gray-500" />}
       </button>
 
       {isExpanded && (
-        <div className="border-t border-gray-800 divide-y divide-gray-800/50">
+        <div className="border-t border-slate-100 dark:border-gray-800 divide-y divide-slate-100 dark:divide-gray-800/50">
           {scenarios.map((s) => (
             <Link key={s.slug} href={`/scenarios/${s.slug}`}>
-              <div className="group flex items-center justify-between p-5 hover:bg-gray-800/40 transition-all cursor-pointer">
+              <div className="group flex items-center justify-between p-5 hover:bg-slate-50/80 dark:hover:bg-gray-800/40 transition-all cursor-pointer">
                 <div className="flex-1 pr-4">
                   <div className="flex items-center gap-3 mb-1">
-                    <h4 className="font-semibold text-gray-300 group-hover:text-blue-400 transition-colors">{s.title}</h4>
+                    <h4 className="font-semibold text-slate-800 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-blue-400 transition-colors">{s.title}</h4>
                     <DifficultyBadge difficulty={s.difficulty} />
                   </div>
-                  <p className="text-sm text-gray-500 line-clamp-1 group-hover:text-gray-400 transition-colors">
+                  <p className="text-sm text-slate-500 dark:text-gray-500 line-clamp-1 group-hover:text-slate-700 dark:group-hover:text-gray-400 transition-colors">
                     {s.shortDescription}
                   </p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-gray-700 group-hover:text-blue-500 group-hover:translate-x-1 transition-all opacity-0 group-hover:opacity-100" />
+                <ArrowRight className="w-4 h-4 text-slate-300 dark:text-gray-700 group-hover:text-indigo-600 dark:group-hover:text-blue-500 group-hover:translate-x-1 transition-all opacity-0 group-hover:opacity-100" />
               </div>
             </Link>
           ))}

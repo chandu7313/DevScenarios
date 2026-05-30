@@ -39,7 +39,7 @@ export function CompanyCard({ company, description }: CompanyCardProps) {
     .join('');
 
   return (
-    <div className="flex flex-col gap-3 flex-1 min-w-[180px] bg-white border border-gray-200 rounded-xl p-4 hover:border-indigo-200 hover:shadow-sm transition-all">
+    <div className="flex flex-col gap-3 flex-1 min-w-[180px] bg-white dark:bg-gray-850 border border-slate-200 dark:border-gray-800 rounded-xl p-4 hover:border-indigo-200 dark:hover:border-indigo-500 hover:shadow-sm transition-all">
       <div className="flex items-center gap-3">
         <div
           className={`w-9 h-9 rounded-full ${colorClass} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}
@@ -47,10 +47,10 @@ export function CompanyCard({ company, description }: CompanyCardProps) {
         >
           {initials || company.slice(0, 2).toUpperCase()}
         </div>
-        <span className="text-sm font-semibold text-gray-900 leading-tight">{company}</span>
+        <span className="text-sm font-semibold text-slate-900 dark:text-gray-100 leading-tight">{company}</span>
       </div>
-      <p className="text-xs text-gray-500 leading-relaxed flex-1">{description}</p>
-      <span className="text-xs font-medium text-indigo-600 hover:text-indigo-800 cursor-pointer transition-colors">
+      <p className="text-xs text-slate-500 dark:text-gray-400 leading-relaxed flex-1">{description}</p>
+      <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 cursor-pointer transition-colors">
         Details →
       </span>
     </div>

@@ -10,6 +10,7 @@ services:
       - .env.local
     environment:
       - REDIS_URL=redis://redis:6379
+      - HOSTNAME=0.0.0.0
     restart: always
     depends_on:
       - redis

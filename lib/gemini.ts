@@ -1,19 +1,17 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Scenario } from '@/types';
 
-let genAI: GoogleGenerativeAI | null = null;
-
-export function getGeminiModel() {
+export function getGeminiModel(systemPrompt: string) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY environment variable is not defined');
   }
 
-  if (!genAI) {
-    genAI = new GoogleGenerativeAI(apiKey);
-  }
-
-  return genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
+  const genAI = new GoogleGenerativeAI(apiKey);
+  return genAI.getGenerativeModel({
+    model: 'gemini-2.5-flash',
+    systemInstruction: systemPrompt,
+  });
 }
 
 export function buildSystemPrompt(scenario: Scenario): string {

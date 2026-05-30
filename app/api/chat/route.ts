@@ -8,43 +8,70 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
-    const { scenarioSlug, sessionId, message, history } = await req.json();
+    const body = await req.json();
+    console.log('[CHAT API] Request body:', JSON.stringify(body));
 
-    // 1. Validate all required fields
-    if (!scenarioSlug || !sessionId || !message || !history) {
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
+    // Validate fields
+    const { scenarioSlug, sessionId, message, history } = body;
+    if (!scenarioSlug || !sessionId || !message) {
+      console.error('[CHAT API] Missing fields:', { scenarioSlug, sessionId, message });
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields' }), 
+        { status: 400 }
+      );
     }
 
+    // Test MongoDB connection
+    console.log('[CHAT API] Connecting to MongoDB...');
     await connectDB();
+    console.log('[CHAT API] MongoDB connected');
 
-    // 2. Fetch scenario from MongoDB by slug
+    // Fetch scenario
+    console.log('[CHAT API] Fetching scenario:', scenarioSlug);
     const scenario = await Scenario.findOne({ slug: scenarioSlug }).lean();
-
-    // 3. Return 404 if scenario not found
+    console.log('[CHAT API] Scenario found:', !!scenario);
     if (!scenario) {
-      return new Response(JSON.stringify({ error: 'Scenario not found' }), { status: 404 });
+      return new Response(
+        JSON.stringify({ error: 'Scenario not found' }), 
+        { status: 404 }
+      );
     }
 
-    const model = getGeminiModel();
-    const systemPrompt = buildSystemPrompt(scenario as any);
+    // Test Gemini API key
+    console.log('[CHAT API] GEMINI_API_KEY exists:', !!process.env.GEMINI_API_KEY);
+    console.log('[CHAT API] GEMINI_API_KEY prefix:', 
+      process.env.GEMINI_API_KEY?.substring(0, 8));
 
-    // 5. Convert history to Gemini format
-    const geminiHistory = history.map((msg: { role: 'user' | 'assistant'; content: string }) => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.content }],
-    }));
+    // Initialize Gemini
+    console.log('[CHAT API] Initializing Gemini model...');
+    const model = getGeminiModel(buildSystemPrompt(scenario as any));
+    console.log('[CHAT API] Gemini model ready');
 
-    // 6. Start streaming chat session with system prompt
+    // Build history
+    const geminiHistory = (history || [])
+      .slice(-10)  // max 10 previous messages
+      .map((msg: any) => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: String(msg.content) }]
+      }))
+      .filter((msg: any) => msg.parts[0].text.trim().length > 0);
+    console.log('[CHAT API] History length:', geminiHistory.length);
+
+    // Start chat
+    console.log('[CHAT API] Starting chat session...');
     const chat = model.startChat({
-      history: [
-        { role: 'user', parts: [{ text: systemPrompt }] },
-        { role: 'model', parts: [{ text: "Understood. I am ready to mentor you as a principal staff engineer on this production scenario." }] },
-        ...geminiHistory,
-      ],
+      history: geminiHistory,
+      generationConfig: {
+        maxOutputTokens: 2048,
+        temperature: 0.7,
+      }
     });
+    console.log('[CHAT API] Chat session created');
 
-    // 7. Stream response using ReadableStream + TransformStream
-    const result = await chat.sendMessageStream(message);
+    // Stream response
+    console.log('[CHAT API] Sending message to Gemini...');
+    const result = await chat.sendMessageStream([{ text: message }]);
+    console.log('[CHAT API] Stream started');
 
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
@@ -52,12 +79,15 @@ export async function POST(req: NextRequest) {
         let fullResponse = '';
         try {
           for await (const chunk of result.stream) {
-            const chunkText = chunk.text();
-            fullResponse += chunkText;
-            controller.enqueue(encoder.encode(chunkText));
+            const text = chunk.text();
+            if (text) {
+              fullResponse += text;
+              controller.enqueue(encoder.encode(text));
+            }
           }
+          console.log('[CHAT API] Stream complete');
 
-          // 8. Save complete message to ChatSession in MongoDB after stream ends
+          // Save complete message to ChatSession in MongoDB after stream ends
           try {
             await ChatSession.findOneAndUpdate(
               { sessionId, scenarioSlug },
@@ -72,28 +102,37 @@ export async function POST(req: NextRequest) {
               { upsert: true }
             );
           } catch (dbError) {
-            console.error('[Chat] MongoDB Save Error:', dbError);
+            console.error('[CHAT API] MongoDB Save Error:', dbError);
           }
+
         } catch (streamError) {
-          console.error('[Chat] Stream Error:', streamError);
-          const errorMessage = "\n\n[System Error: Gemini stream interrupted. Please try again.]";
-          controller.enqueue(encoder.encode(errorMessage));
+          console.error('[CHAT API] Stream error:', streamError);
+          controller.error(streamError);
         } finally {
-          // 10. Always close stream in finally block
           controller.close();
         }
-      },
+      }
     });
 
-    // 9. Return streaming response with headers
     return new Response(stream, {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
         'X-Content-Type-Options': 'nosniff',
-      },
+        'Cache-Control': 'no-cache',
+      }
     });
-  } catch (error) {
-    console.error('[Chat] POST Error:', error);
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
+
+  } catch (error: any) {
+    console.error('[CHAT API] Fatal error:', error);
+    console.error('[CHAT API] Error name:', error?.name);
+    console.error('[CHAT API] Error message:', error?.message);
+    console.error('[CHAT API] Error stack:', error?.stack);
+    return new Response(
+      JSON.stringify({ 
+        error: 'Internal server error',
+        details: error?.message 
+      }),
+      { status: 500 }
+    );
   }
 }
